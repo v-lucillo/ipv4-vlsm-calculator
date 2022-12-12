@@ -1,0 +1,298 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!--====== Title ======-->
+    <title>IPv4 VLSM Calculator</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--====== Bootstrap CSS ======-->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!--====== Default CSS ======-->
+    <link rel="stylesheet" href="assets/css/default.css">
+    <!--====== Style CSS ======-->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
+    <style type="text/css">
+        
+        input.input_tag{
+            border: 2px solid #E1E1E1;     height: 65px;     padding: 0 30px;     border-radius: 5px;     width: 100%;     color: #2E2E2E;
+        }
+    </style>
+</head>
+
+<body>
+
+    
+    <section id="footer" class="footer-area pt-50">
+        <div class="container">
+            <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="subscribe-content mt-20">
+                            <h2 class="subscribe-title" style="font-size: 50px">Enter IPv4 address<span>that you want to VLSM</span></h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mt-20">
+                            <form>
+                          <div class="form-group">
+                            <input type="text" class="input_tag" placeholder="Enter IPv4 address">
+                          </div>
+                          <div class="form-group">
+                            <input type="text" class="input_tag" placeholder="Number of hosts">
+                          </div>
+                          <button class="main-btn">Calculate</button>
+                        </form>
+                        </div>
+                    </div>
+                 </div> <!-- row -->
+            </div> <!-- subscribe area -->
+            <div class="footer-widget pb-100" style="padding-top: 30px">
+                <div class="row">
+                    <div class="col-lg-12 col-md-6 col-sm-8">
+                        <div class="subscribe-area footer-about mt-50 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s" style="padding: 50px 50px 50px;">
+                            <table class="table table-dark table-striped" >
+                              <thead>
+                                <tr>
+                                  <th scope="col"># Host</th>
+                                  <th scope="col">Network Address</th>
+                                  <th scope="col">First Usable Address</th>
+                                  <th scope="col">Last Usable Address</th>
+                                  <th scope="col">Broadcast Address</th>
+                                  <th scope="col">CIDR</th>
+                                  <th scope="col">Subnet Mask</th>
+                                  <th scope="col">Octet</th>
+                                  <th scope="col">Increament</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>78</td>
+                                  <td>10.10.0.0</td>
+                                  <td>10.10.0.1</td>
+                                  <td>10.10.0.126</td>
+                                  <td>10.10.0.127</td>
+                                  <td>25</td>
+                                  <td>255.255.255.128</td>
+                                  <td>4</td>
+                                  <td>128</td>
+                                </tr>
+                                <tr>
+                                  <td>78</td>
+                                  <td>10.10.0.0</td>
+                                  <td>10.10.0.1</td>
+                                  <td>10.10.0.126</td>
+                                  <td>10.10.0.127</td>
+                                  <td>25</td>
+                                  <td>255.255.255.128</td>
+                                  <td>4</td>
+                                  <td>128</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div> <!-- footer about -->
+                    </div>
+                    
+                </div> <!-- row -->
+            </div> 
+        </div> <!-- container -->
+    </section>
+    
+    <!--====== Jquery js ======-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+    <!--====== Main js ======-->
+    <script src="assets/js/main.js"></script>
+
+    <script type="text/javascript">
+        
+        var table =  $("table").DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    </script>
+</body>
+
+</html>
+
+
+<script type="">
+	// var ip_address = [10,10,0,0];
+	var ip_address = [10,10,0,0];
+	var host = [20,40,78,5,29].sort((a,b) => b-a);
+	// var host = [500, 200 , 100];
+	let cidr = 32;
+	let ip_map = get_ip_map();
+	var network_addresses =  [];
+
+	function get_ip_map(){
+		var ip_map = [];
+		for(let i = 0; i <= 32; i++)	{
+			ip_map.push({
+				host: Math.pow(2,i),
+				cidr: cidr-i,
+				octet: get_octet(i),
+			})
+		}
+		return ip_map;
+	}
+	
+	network_addresses.push(ip_address.join("."));
+	for(let i = 0; i <  host.length ; i++){
+		// every octet should only have 255, if exceeds add it to the preceeding octet
+		// let equivalent_host = host[i]+=2;
+		var ip_mapper = get_ip_mapper(host[i]);
+		network_addresses.push(network_address(ip_mapper.host).join('.'));
+	}
+	function get_ip_mapper(host){
+		let equivalent_host = host+=2;
+		return ip_map.find(object => object.host >= equivalent_host);
+	}
+
+	function network_address(increment){
+		for(let j = (ip_address.length -1) ; j >=0; j--){
+			var octet;
+			if(j == 3){
+				octet = ip_address[j] + (increment) ;
+			}else{
+				octet = ip_address[j]
+			}
+			if(Math.trunc(octet/256) >=  1){
+				ip_address[(j - 1)] += Math.trunc(octet/256) ;
+				ip_address[j] =  (octet%256)
+			}else{
+				ip_address[j] = octet
+			}
+		}
+		return ip_address;
+	}
+
+
+	function get_octet(exponent){
+		exponent += 1; 
+		if(exponent <= 8){
+			return 4;
+		}
+		if(exponent <=  16){
+			return 3;
+		}
+		if(exponent <=  24){
+			return 2;
+		}
+		if(exponent <=  32){
+			return 3;
+		}
+	}
+
+
+	function partial_result(){
+		var result = [];
+		for(let i = 0; i < network_addresses.length -1 ;i++){	
+			var subnet_object = get_ip_mapper(host[i]);
+			result.push({
+				host: host[i],
+				cidr: subnet_object.cidr,
+				increment: subnet_object.host,
+				octet: subnet_object.octet,
+				network_address: network_addresses[i], 
+				subnet_mask: get_subnetmask(subnet_object.cidr)
+			});
+		}
+		return result;
+	}
+
+	function get_result(){
+		var result = [];
+		var partial_net_add = partial_result();
+		var broadcast_address = network_properties(partial_net_add, 1);
+		var last_usable_address = network_properties(partial_net_add, 2);
+		var first_usable_addres = first_usable_address(partial_net_add);
+		for(var i = 0; i< partial_net_add.length; i++){
+			result.push({
+				host: partial_net_add[i].host,
+				cidr: partial_net_add[i].cidr,
+				increment: partial_net_add[i].increment,
+				octet: partial_net_add[i].octet,
+				network_address: partial_net_add[i].network_address, 
+				first_usable: first_usable_addres[i],
+				last_usable: last_usable_address[i],
+				broadcast_address: broadcast_address[i],
+				subnet_mask: get_subnetmask(partial_net_add[i].cidr)
+			});
+		}
+		return result;
+	}
+	console.log(get_result());
+
+
+	function network_properties(network_addresses, property){ // property = 1 =  broadcast address | property = 2 = lastusable adddress
+		var result = [];
+		for(var i =  0; i < network_addresses.length; i++){
+			var net_add =  network_addresses[i].network_address.split(".");
+			var increment =  network_addresses[i].increment;
+			for(let j = (net_add.length -1) ; j >=0; j--){
+				var octet;
+				if(j == 3){
+					octet = parseInt(net_add[j]) + (increment - property) ;
+				}else{
+					octet = net_add[j]
+				}
+				if(Math.trunc(octet/256) >=  1){
+					net_add[(j - 1)] = parseInt(net_add[(j - 1)]) + Math.trunc(octet/256) ;
+					net_add[j] =  (octet%256)
+				}else{
+					net_add[j] = octet
+				}
+			}
+			result.push(net_add.join("."));
+		}
+		return result;
+	}
+
+	function first_usable_address(network_address){
+		var result = [];
+		for(var i = 0; i < network_address.length; i++){
+			var net_add =  network_address[i].network_address.split(".");
+			net_add[3] =  parseInt(net_add[3]) + 1;
+			result.push(net_add.join("."));
+		}
+		return result;
+	}
+
+	
+
+	function get_subnetmask(cidr){
+		var host_addressess = [0,128,192,224,240,248,252,254];
+		var subnet_mask = "";
+		let network_address =  Math.trunc(cidr/8);
+		let host_address = cidr%8;
+		for(let i = 0 ; i < network_address; i++){
+			subnet_mask += "255.";
+		}
+		subnet_mask += host_addressess[parseInt(host_address)];
+		if(subnet_mask.split(".").length <= 4){
+			let diff =  4 - subnet_mask.split(".").length;
+			subnet_mask += ".";
+			for(let j = 0; j < diff; j++){
+				subnet_mask += "0.";
+			}
+		}
+
+		return subnet_mask.slice(0,-1);
+	}
+
+
+	
+</script>
+</html>
