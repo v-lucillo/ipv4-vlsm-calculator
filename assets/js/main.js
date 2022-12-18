@@ -1,5 +1,5 @@
-	var ip_address = [192,168,10,0];
-	var host = [100,50,10];
+	var ip_address = [];
+	var host = [];
 	let cidr = 32;
 	let ip_map = get_ip_map();
 	var network_addresses =  [];
@@ -70,7 +70,6 @@
 		var result = [];
 		for(let i = 0; i < network_addresses.length -1 ;i++){	
 			var subnet_object = get_ip_mapper(host[i]);
-			console.log(subnet_object);
 			result.push({
 				host: host[i],
 				cidr: subnet_object.cidr,
@@ -105,8 +104,6 @@
 		return result;
 	}
 
-	// init();
-	// console.log(get_result());
 	function network_properties(network_addresses, property){ // property = 1 =  broadcast address | property = 2 = lastusable adddress
 		var result = [];
 		for(var i =  0; i < network_addresses.length; i++){
@@ -195,11 +192,8 @@
 		network_addresses =  [];
 		host = host_input.val().sort((a,b) => b-a).map(i=>Number(i));
 		ip_address = $('input[name="ip_address"]').val().split(".").map(i=>Number(i));
-		console.log(ip_address);
-		console.log(host);
 		let check_ip = check_ip_address(ip_address);
 		let check_hosts = check_host(host);
-		console.log([check_ip,check_hosts]);
 		reset_error();
 		if(check_ip != true || check_hosts != true){
 			if(check_ip != true){
