@@ -1,5 +1,5 @@
-var ip_address;;
-	var host;
+	var ip_address = [192,168,10,0];
+	var host = [100,50,10];
 	let cidr = 32;
 	let ip_map = get_ip_map();
 	var network_addresses =  [];
@@ -105,6 +105,8 @@ var ip_address;;
 		return result;
 	}
 
+	// init();
+	// console.log(get_result());
 	function network_properties(network_addresses, property){ // property = 1 =  broadcast address | property = 2 = lastusable adddress
 		var result = [];
 		for(var i =  0; i < network_addresses.length; i++){
@@ -115,7 +117,7 @@ var ip_address;;
 				if(j == 3){
 					octet = parseInt(net_add[j]) + (increment - property) ;
 				}else{
-					octet = net_add[j]
+					octet = parseInt(net_add[j])
 				}
 				if(Math.trunc(octet/256) >=  1){
 					net_add[(j - 1)] = parseInt(net_add[(j - 1)]) + Math.trunc(octet/256) ;
@@ -186,9 +188,15 @@ var ip_address;;
 	});
 
 	$("button[name='calculate_button']").on('click', function(){
-		host = host_input.val().sort((a,b) => b-a);
-		ip_address = $('input[name="ip_address"]').val().split(".");
+		ip_address;
+		host;
+		cidr = 32;
+		ip_map = get_ip_map();
+		network_addresses =  [];
+		host = host_input.val().sort((a,b) => b-a).map(i=>Number(i));
+		ip_address = $('input[name="ip_address"]').val().split(".").map(i=>Number(i));
 		console.log(ip_address);
+		console.log(host);
 		let check_ip = check_ip_address(ip_address);
 		let check_hosts = check_host(host);
 		console.log([check_ip,check_hosts]);
@@ -219,11 +227,7 @@ var ip_address;;
 		if(ip_address.length != 4){
 			return "Invalid ip address";
 		}
-		for(let i = 0; i < ip_address.length; i++){
-			if(ip_address[i] == "" || ip_address[i] == null){
-				return "Invalid ip address";
-			}
-			
+		for(let i = 0; i < ip_address.length; i++){	
 			if (isNaN(parseInt(ip_address[i]))) {
 				return "Invalid ip address, string detected";
 			}
